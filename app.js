@@ -12,7 +12,7 @@ class Server{
         http.createServer((req, res) => {
             this.totalRequests++;  // Track total requests
             this.handleRequest(req, res);
-        }).listen(8888);
+        }).listen(8080);    
     }
 
     handleRequest(req, res) {
@@ -20,9 +20,13 @@ class Server{
         let path = parsedUrl.pathname;
         const method = req.method;
 
-        if (path.endsWith("/")) {
+        if (path === "/") {
+            res.writeHead(200, { "Content-Type": "text/plain" });
             path = path.slice(0, -1);
-        } 
+            res.end("Health check OK");
+            return;
+        }
+ 
         // console.log(path);
 
        // res.setHeader("Content-Type", "application/json");
