@@ -30,6 +30,12 @@ class Server{
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+        if (method === "OPTIONS") {
+            res.writeHead(204); // No content
+            res.end();
+            return;
+        }
+
         if (method === "GET" && path === "/api/definitions") {
             this.getDefinition(parsedUrl.query.word, res);
         } else if (method === "POST" && path === "/api/definitions") {
