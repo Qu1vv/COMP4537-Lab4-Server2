@@ -1,21 +1,18 @@
 const http = require("http");
 const url = require("url");
 const msg = require('./lang/en/user');
+
 class Server{
-    constructor(port = 3000){
-        this.port = port,
+    constructor(){
         this.dictionary = {};
         this.totalRequests = 0;
     }
     start() {
-        const server = http.createServer((req, res) => {
+
+        http.createServer((req, res) => {
             this.totalRequests++;  // Track total requests
             this.handleRequest(req, res);
-        });
-
-        server.listen(this.port, () => {
-            console.log(`Server running on ${this.port}...`);
-        });
+        }).listen(8888);
     }
 
     handleRequest(req, res) {
