@@ -20,12 +20,6 @@ class Server{
         let path = parsedUrl.pathname;
         const method = req.method;
 
-        if (path === "/") {
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            path = path.slice(0, -1);
-            res.end("Health check OK");
-            return;
-        }
  
         // console.log(path);
 
@@ -33,6 +27,13 @@ class Server{
         res.setHeader("Access-Control-Allow-Origin", "*");  
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+        if (path === "/") {
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            //path = path.slice(0, -1);
+            res.end("Health check OK");
+            return;
+        }
 
         if (method === "OPTIONS") {
             res.writeHead(204); // No content
@@ -55,6 +56,7 @@ class Server{
 
     getDefinition(word, res) {
         // console.log("get definition, GET");
+        word = word?.trim().toLowerCase();
         if (!word || typeof word !== "string") {
             return this.sendResponse(res, 400, { error: msg.invalidResponseError });
         }
@@ -75,7 +77,7 @@ class Server{
     }
 
     addDefinition(data, res) {
-        const word = data.word?.trim();
+        const word = data.word?.trim().toLowerCase();
         const definition = data.definition?.trim();
 
         if (!word || !definition) {
