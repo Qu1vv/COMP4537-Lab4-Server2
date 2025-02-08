@@ -20,7 +20,9 @@ class Server{
         let path = parsedUrl.pathname;
         const method = req.method;
 
- 
+        if (path.endsWith("/")) {
+            path = path.slice(0, -1);
+        } 
         // console.log(path);
 
        // res.setHeader("Content-Type", "application/json");
@@ -28,31 +30,20 @@ class Server{
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-        if (path === "/") {
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            //path = path.slice(0, -1);
-            res.end("Health check OK");
-            return;
-        }
-
-        if (method === "OPTIONS") {
-            res.writeHead(204); // No content
-            res.end();
-            return;
-        }
-
-        if (method === "GET" && path === "/api/definitions") {
-            this.getDefinition(parsedUrl.query.word, res);
-        } else if (method === "POST" && path === "/api/definitions") {
-            this.processRequestBody(req, res, (data) => this.addDefinition(data, res));
-        } else if (method === "OPTIONS") {
-            res.writeHead(204); // no content to display
-            res.end();
-            return;
-        } else {
-            this.sendResponse(res, 404, { error: msg.routeNotFoundError });
-        }
+    if (method === "OPTIONS") {
+        res.writeHead(204);
+        res.end();
+        return;
     }
+
+    if (method === "GET" && path === "/api/definitions") {
+        this.getDefinition(parsedUrl.query.word, res);
+    } else if (method === "POST" && path === "/api/definitions") {
+        this.processRequestBody(req, res, (data) => this.addDefinition(data, res));
+    } else {
+        this.sendResponse(res, 404, { error: msg.routeNotFoundError });
+    }
+}
 
     getDefinition(word, res) {
         // console.log("get definition, GET");
@@ -100,6 +91,7 @@ class Server{
             // message: `New entry recorded: "${word} : ${definition}"`
         });
     }
+    
 
     processRequestBody(req, res, callback) {
         // console.log("process request body, post");
